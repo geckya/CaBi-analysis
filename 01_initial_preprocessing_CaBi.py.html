@@ -1,0 +1,114 @@
+
+# coding: utf-8
+
+# In[1]:
+
+get_ipython().magic('matplotlib inline')
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+
+# In[2]:
+
+CaBi_2010_q4 = pd.read_csv("../input_data/2010-q4_trip_history_data.csv")
+CaBi_2011_q1 = pd.read_csv("../input_data/2011-q1_trip_history_data.csv")
+CaBi_2011_q2 = pd.read_csv("../input_data/2011-q2_trip_history_data.csv")
+CaBi_2011_q3 = pd.read_csv("../input_data/2011-q3_trip_history_data.csv")
+CaBi_2011_q4 = pd.read_csv("../input_data/2011-q4_trip_history_data.csv")
+CaBi_2012_q1 = pd.read_csv("../input_data/2012-q1_trip_history_data.csv")
+CaBi_2012_q2 = pd.read_csv("../input_data/2012-q2_trip_history_data.csv")
+CaBi_2012_q3 = pd.read_csv("../input_data/2012-q3_trip_history_data.csv")
+CaBi_2012_q4 = pd.read_csv("../input_data/2012-q4_trip_history_data.csv")
+
+
+# In[3]:
+
+CaBi_2013_q1 = pd.read_csv("../input_data/2013-q1_trip_history_data.csv")
+CaBi_2013_q2 = pd.read_csv("../input_data/2013-q2_trip_history_data.csv")
+CaBi_2013_q3 = pd.read_csv("../input_data/2013-q3_trip_history_data.csv")
+CaBi_2013_q4 = pd.read_csv("../input_data/2013-q4_trip_history_data.csv")
+CaBi_2014_q1 = pd.read_csv("../input_data/2014-q1_trip_history_data.csv")
+CaBi_2014_q2 = pd.read_csv("../input_data/2014-q2_trip_history_data.csv")
+CaBi_2014_q3 = pd.read_csv("../input_data/2014-q3_trip_history_data.csv")
+CaBi_2014_q4 = pd.read_csv("../input_data/2014-q4_trip_history_data.csv")
+CaBi_2015_q1 = pd.read_csv("../input_data/2015-q1_trip_history_data.csv")
+CaBi_2015_q2 = pd.read_csv("../input_data/2015-q2_trip_history_data.csv")
+CaBi_2015_q3 = pd.read_csv("../input_data/2015-q3_trip_history_data.csv")
+CaBi_2015_q4 = pd.read_csv("../input_data/2015-q4_trip_history_data.csv")
+
+
+# In[ ]:
+
+CaBi_2016_q1 = pd.read_csv("../input_data/2016-q1_trip_history_data.csv")
+CaBi_2016_q2 = pd.read_csv("../input_data/2016-q2_trip_history_data.csv")
+CaBi_2016_q3 = pd.read_csv("../input_data/2016-q3_trip_history_data_ed.csv")
+CaBi_2016_q4 = pd.read_csv("../input_data/2016-q4_trip_history_data.csv")
+CaBi_2017_q1 = pd.read_csv("../input_data/2017-q1_trip_history_data.csv")
+CaBi_2017_q2 = pd.read_csv("../input_data/2017-q2_trip_history_data.csv")
+CaBi_2017_q3 = pd.read_csv("../input_data/2017-q3_trip_history_data_ed.csv")
+CaBi_2017_q4 = pd.read_csv("../input_data/2017-q4_trip_history_data.csv")
+
+
+# In[ ]:
+
+dfCB = pd.concat([CaBi_2010_q4,CaBi_2011_q1,CaBi_2011_q2,CaBi_2011_q3,CaBi_2011_q4,
+                  CaBi_2012_q1,CaBi_2012_q2,CaBi_2012_q3,CaBi_2012_q4,
+                  CaBi_2013_q1,CaBi_2013_q2,CaBi_2013_q3,CaBi_2013_q4,
+                  CaBi_2014_q1,CaBi_2014_q2,CaBi_2014_q3,CaBi_2014_q4,
+                  CaBi_2015_q1,CaBi_2015_q2,CaBi_2015_q3,CaBi_2015_q4,
+                  CaBi_2016_q1,CaBi_2016_q2,CaBi_2016_q3,CaBi_2016_q4,
+                  CaBi_2017_q1,CaBi_2017_q2,CaBi_2017_q3,CaBi_2017_q4,
+                 ])
+dfCB['Start date'] = pd.to_datetime(dfCB['Start date'])
+dfCB['End date'] = pd.to_datetime(dfCB['End date'])
+dfCB.set_index('Start date', drop=False, inplace=True)
+dfCB.drop(['Start station','End station'],axis=1,inplace=True)
+dfCB.rename(columns={'Duration (ms)': 'Duration', 'Bike number': 'BikeID'}, inplace=True)
+dfCB.to_csv('CaBi_all.csv', index=False)
+
+
+# In[ ]:
+
+#number of trips
+fig=plt.figure(figsize=(12, 9), dpi= 80, facecolor='w', edgecolor='k')
+
+tmp = dfCB.resample('D').Duration.count()
+ax = tmp.plot(label="Trips", legend="Trips")
+
+tmp = dfCB.resample('D').BikeID.nunique()
+ax = tmp.plot(label="Bikes in Use", legend="Bikes in Use")
+
+tmp = dfCB.resample('D')['Start station number'].nunique()
+ax = tmp.plot(label="Start Stations", legend="Start Stations")
+
+tmp = dfCB.resample('D')['End station number'].nunique()
+ax = tmp.plot(label="End Stations", legend="End Stations")
+
+
+ax.set(xlabel="Trip Start Date", ylabel="")
+fig.savefig("../figures/CaBi_overview.png")
+
+
+# In[ ]:
+
+#number of trips
+fig=plt.figure(figsize=(12, 9), dpi= 80, facecolor='w', edgecolor='k')
+
+tmp = dfCB.resample('D').Duration.count()
+ax = tmp.plot(label="Trips", legend="Trips")
+
+for mt in dfCB['Member type'].unique():
+    tmp1 = dfCB[dfCB['Member type']==mt].resample('D').Duration.count()
+    ax = tmp1.plot(label=mt, legend=mt)
+
+
+ax.set(xlabel="Trip Start Date", ylabel="")
+fig.savefig("../figures/CaBi_trips.png")
+
+
+# In[ ]:
+
+
+
